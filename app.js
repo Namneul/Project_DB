@@ -13,7 +13,7 @@ app.use(express.json()); // JSON 요청 바디 파싱
 app.get('/', async(req, res) => {
     try{
         const conn = await db.init();
-        const recipes = await db.query(conn, 'SELECT * FROM recipes');
+        const recipes = await db.query(conn, 'SELECT * FROM recipes where id < 30');
         await conn.end();
         res.json(recipes);
     } catch(err) {
