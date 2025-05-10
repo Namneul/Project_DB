@@ -1,1 +1,6 @@
 "secret.env" 
+.env
+.env.*
+*.env
+*.env.*
+secret.env
