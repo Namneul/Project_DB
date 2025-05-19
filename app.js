@@ -1,26 +1,31 @@
+require('dotenv').config();
+
 const express = require('express');
 const cors = require("cors");
 const fs = require("fs");
-const db = require("./lib/db.js");
 const app = express();
-const conn = db.init;
 const port = 3000;
+
+const Routes = require('./routes/route');
+
 
 app.use(cors());
 app.use(express.json()); // JSON 요청 바디 파싱
+app.use('/',Routes);
 
-//클라이언트에서 HTTP 요청 메소드 중 GET을 이용해서 'host:port:로 요청을 보내면 실행되는 라우트
-app.get('/', async(req, res) => {
-    try{
-        const conn = await db.init();
-        const recipes = await db.query(conn, 'SELECT * FROM recipes where id < 30');
-        await conn.end();
-        res.json(recipes);
-    } catch(err) {
-        res.status(500).json({success:false, error: err.message });
-    }
-    
-})
+app.use((req, res, next) => {
+    res.status(404).json({ success: false, error: "Not Found" });
+});
+
+
+app.use((err, req, res, next) => {
+    console.error("전역 에러 핸들러:", err.stack);
+    res.status(err.status || 500).json({
+        success: false,
+        error: err.message || "Internal Server Error"
+    });
+});
+
 
 
 //app.listen() 함수를 사용해서 서버를 실행한다.
