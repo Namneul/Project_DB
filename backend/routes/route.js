@@ -12,5 +12,6 @@ router.get('/', rootController.healthCheck);
 router.post('/searchfood', searchFoodController.searchFood);
 router.post('/register', userController.registerUser);
 router.post('/login', userController.loginUser);
+// router.post
 
 module.exports = router;
