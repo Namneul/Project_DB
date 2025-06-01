@@ -134,6 +134,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "font_awesome_flutter",
+      "rootUri": "file:///C:/Users/cysar/AppData/Local/Pub/Cache/hosted/pub.dev/font_awesome_flutter-10.8.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "html",
       "rootUri": "file:///C:/Users/cysar/AppData/Local/Pub/Cache/hosted/pub.dev/html-0.15.6",
       "packageUri": "lib/",
@@ -332,7 +338,7 @@
       "languageVersion": "3.7"
     }
   ],
-  "generated": "2025-05-18T16:27:43.246843Z",
+  "generated": "2025-05-27T00:23:26.767255Z",
   "generator": "pub",
   "generatorVersion": "3.7.2",
   "flutterRoot": "file:///C:/flutter",

@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require("cors");
 const fs = require("fs");
+const bodyParser = require('body-parser');
 const app = express();
 const port = 3000;
 
@@ -12,6 +13,8 @@ const Routes = require('./routes/route');
 app.use(cors());
 app.use(express.json()); // JSON 요청 바디 파싱
 app.use('/',Routes);
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended:true }))
 
 app.use((req, res, next) => {
     res.status(404).json({ success: false, error: "Not Found" });

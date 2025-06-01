@@ -180,7 +180,7 @@ class _SearchPageState extends State<SearchPage> { // State 클래스 생성
         }
 
       } else {
-        // 서버에서 200이 아닌 상태 코드를 보냈을 때 (예: 400, 500 등)
+        // 서버에서 200이 아닌 상태 코드를 보냈을 때 (예: 40 0, 500 등)
         // 이 경우 response.data의 구조가 에러 메시지 등을 포함할 수 있습니다.
         setState(() {
           // 500 오류처럼 서버 메시지가 있다면 response.data에서 추출하여 표시할 수도 있습니다.

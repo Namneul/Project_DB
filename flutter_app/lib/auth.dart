@@ -3,8 +3,8 @@ import 'package:untitled/register.dart';
 import 'package:untitled/login.dart';
 
 
-class MainScreen extends StatelessWidget {
-  const MainScreen({super.key});
+class authScreen extends StatelessWidget {
+  const authScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

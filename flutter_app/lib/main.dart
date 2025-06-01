@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/login.dart';
-import 'package:untitled/register.dart';
 import 'search_page.dart'; // 요리 검색 화면
 import 'recommendation_page.dart'; // 레시피 추천 화면
+import 'userProfile.dart';
 
 void main() {
   runApp(MyApp());
@@ -65,14 +64,16 @@ class RecipeHome extends StatelessWidget {
                   },
                   child: buildMenuButton(Icons.lightbulb_outline, '레시피 추천'),
                 ),
-                ElevatedButton(onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()),
-                  );
-                },child: const Text("로그인"),),
-                ElevatedButton(onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) =>  SignupPage()),
-                  );
-                },child: const Text("회원가입"),),
+                const SizedBox(width:   10,),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => UserProfilePage()),
+                    );
+                  },
+                  child: buildMenuButton(Icons.person, "프로필"),
+                ),
               ],
             ),
           ],

@@ -95,6 +95,7 @@ class _LoginScreenState extends State<LoginPage> {
                       onPressed: (){
                         if (_LoginFormkey.currentState!.validate()){
                           print('ID: ${idController.text}, Password: ${passwordController.text}');
+                          _loginUser();
                         }
                       },
                       child: const Text("Sign In")),
@@ -110,7 +111,8 @@ class _LoginScreenState extends State<LoginPage> {
 
   Future<void> _loginUser() async {
     try{
-      var url = 'http://192.168.163.1:3000/register';
+      bool isLogin = false;
+      var url = 'http://192.168.163.1:3000/login';
       var dio = Dio();
 
       Map<String, dynamic> userData = {
@@ -123,8 +125,10 @@ class _LoginScreenState extends State<LoginPage> {
         data: userData,
       );
       if(response.statusCode == 200){
+        print('로그인 성공: ${response.data}');
+        isLogin = true;
       } else{
-
+        print('로그인 실패: ${response.statusCode}, ${response.data}');
       }
     } catch(e){
       print(e);
