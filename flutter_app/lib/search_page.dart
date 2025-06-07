@@ -57,43 +57,58 @@ class _SearchPageState extends State<SearchPage> { // State 클래스 생성
           ),
         ),
       ),
-      body: Center( // 검색 결과 표시 영역
-        child: isLoading
-            ? const CircularProgressIndicator() // 로딩 중
-            : error != null
-            ? Text('Error: $error') // 에러 메시지 표시
-            : searchResults == null || searchResults!.isEmpty
-            ? const Text('검색어를 입력하거나 검색 결과가 없습니다.') // 초기 상태 또는 결과 없음
-            : ListView.builder( // 검색 결과 목록 표시
-          itemCount: searchResults!.length,
-          itemBuilder: (context, index) {
-            // searchResults의 각 항목은 Map<String, dynamic> 형태일 것으로 예상
-            var item = searchResults![index];
+        body: Center(
+          child: isLoading
+              ? const CircularProgressIndicator()
+              : error != null
+              ? Text('Error: $error')
+              : searchResults == null || searchResults!.isEmpty
+              ? const Text('검색어를 입력하거나 검색 결과가 없습니다.')
+              : ListView.builder(
+            itemCount: searchResults!.length,
+            itemBuilder: (context, index) {
+              var item = searchResults![index];
+              String menuName = item['메뉴 이름'] ?? '이름 없음';
+              String methodCategory = (item['방법 분류'] is List)
+                  ? (item['방법 분류'] as List).join(', ')
+                  : item['방법 분류']?.toString() ?? '분류 없음';
+              String countryCategory = item['국가 분류'] ?? '국가 없음';
+              String difficulty = item['난이도 분류'] ?? '난이도 없음';
+              String mainIngredients = (item['주재료 이름'] is List)
+                  ? (item['주재료 이름'] as List).join(', ')
+                  : item['주재료 이름']?.toString() ?? '주재료 없음';
 
-            // !!! 실제 받아온 데이터의 키 이름을 사용하도록 수정 !!!
-            String menuName = item['메뉴 이름'] ?? '이름 없음'; // '메뉴 이름' 사용
-            // '방법 분류'와 '주재료 이름'은 배열이므로 join으로 문자열 생성
-            String methodCategory = (item['방법 분류'] is List) ? (item['방법 분류'] as List).join(', ') : item['방법 분류']?.toString() ?? '분류 없음';
-            String countryCategory = item['국가 분류'] ?? '국가 없음'; // '국가 분류' 사용
-            String difficulty = item['난이도 분류'] ?? '난이도 없음'; // '난이도 분류' 사용
-            String mainIngredients = (item['주재료 이름'] is List) ? (item['주재재료 이름'] as List).join(', ') : item['주재료 이름']?.toString() ?? '주재료 없음'; // '주재료 이름' 사용
+              return Card(
+                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                child: ListTile(
+                  leading: Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(
+                      Icons.image,
+                      size: 32,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  title: Text(menuName, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('분류: $methodCategory ($countryCategory)'),
+                      Text('난이도: $difficulty'),
+                      Text('주재료: $mainIngredients'),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        )
 
-            return ListTile(
-              // 받아온 실제 데이터를 사용하여 UI 표시
-              title: Text(menuName), // 메뉴 이름 표시
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('분류: $methodCategory ($countryCategory)'), // 방법 분류 및 국가 분류
-                  Text('난이도: $difficulty'), // 난이도 분류
-                  Text('주재료: $mainIngredients'), // 주재료 이름
-                ],
-              ),
-              // 여기에 더 많은 정보를 표시하거나 탭 이벤트 등을 추가할 수 있습니다.
-            );
-          },
-        ),
-      ),
     );
   }
 

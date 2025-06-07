@@ -6,13 +6,13 @@ require('dotenv').config();
 exports.registerUser = async(req, res) => {
     const conn = await db.init();
     try{
-        const {name, id, password} = req.body;
+        const {name, email, id, password} = req.body;
 
-         if (!name || !id || !password) {
-            return res.status(400).json({ success: false, error: "이름, 아이디, 비밀번호는 필수입니다." });
+         if (!name || !email || !id || !password) {
+            return res.status(400).json({ success: false, error: "이름, 이메일, 아이디, 비밀번호는 필수입니다." });
         }
         console.log('컨트롤러에서 받은 회원가입 데이터:', { name, id });
-        const result = await db.query(conn, 'INSERT INTO users (name, id, password) values (?, ?, ?)',[name, id, password]);
+        const result = await db.query(conn, 'INSERT INTO users (name, id, password, email) values (?, ?, ?, ?)',[name, id, password, email]);
         console.log('데이터베이스 저장 결과:', result);
         
         const responseData = {

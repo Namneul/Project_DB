@@ -207,7 +207,8 @@ Future<void> _modifyUser() async{
     var url = 'http://192.168.163.1:3000/user';
     var dio = Dio();
     Map<String, dynamic> userData = {
-
+      'id': changedId,
+      'password': changedPW,
     };
 
   } catch(e){

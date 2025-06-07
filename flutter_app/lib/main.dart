@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'search_page.dart'; // 요리 검색 화면
 import 'recommendation_page.dart'; // 레시피 추천 화면
 import 'userProfile.dart';
+import 'register.dart';
 
 void main() {
   runApp(MyApp());
@@ -69,7 +70,7 @@ class RecipeHome extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => UserProfilePage()),
+                      MaterialPageRoute(builder: (context) => RegisterScreen()),
                     );
                   },
                   child: buildMenuButton(Icons.person, "프로필"),
