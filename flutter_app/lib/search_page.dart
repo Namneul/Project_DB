@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:untitled/detailPage.dart';
 
 // TextEditingController는 Stateful 위젯 안으로 옮기는 것이 관리하기 좋습니다.
 // final TextEditingController searchController = TextEditingController(); // 여기서는 제거
@@ -77,10 +78,28 @@ class _SearchPageState extends State<SearchPage> { // State 클래스 생성
               String mainIngredients = (item['주재료 이름'] is List)
                   ? (item['주재료 이름'] as List).join(', ')
                   : item['주재료 이름']?.toString() ?? '주재료 없음';
+              List<String> recipe = (item['레시피'] is List)
+                  ? List<String>.from(item['레시피'])
+                  : item['레시피'] is String
+                  ? [item['레시피']]
+                  : [];
 
               return Card(
                 margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 child: ListTile(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder:
+                    (context) => DetailPage(
+                        menuName: menuName,
+                        methodCategory: methodCategory,
+                        countryCategory: countryCategory,
+                        difficulty: difficulty,
+                        mainIngredients: mainIngredients,
+                        recipe: recipe,
+                    ),
+                    ),
+                    );
+                    },
                   leading: Container(
                     width: 60,
                     height: 60,
