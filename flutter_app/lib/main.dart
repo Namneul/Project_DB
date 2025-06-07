@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:untitled/login.dart';
 import 'search_page.dart'; // 요리 검색 화면
 import 'recommendation_page.dart'; // 레시피 추천 화면
 import 'userProfile.dart';
@@ -68,10 +70,7 @@ class RecipeHome extends StatelessWidget {
                 const SizedBox(width:   10,),
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => RegisterScreen()),
-                    );
+                    onProfileButtonPressed(context);
                   },
                   child: buildMenuButton(Icons.person, "프로필"),
                 ),
@@ -81,6 +80,9 @@ class RecipeHome extends StatelessWidget {
         ),
       ),
     );
+
+
+
   }
 
   Widget buildMenuButton(IconData icon, String label) {
@@ -103,4 +105,18 @@ class RecipeHome extends StatelessWidget {
       ),
     );
   }
+
+
+  void onProfileButtonPressed(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('jwt_token');
+    if (token == null) {
+      // 토큰 없음: 로그인 화면으로
+      Navigator.push(context, MaterialPageRoute(builder: (_) => LoginPage()));
+    } else {
+      // 토큰 있음: UserPage로
+      Navigator.push(context, MaterialPageRoute(builder: (_) => UserProfilePage()));
+    }
+  }
+
 }

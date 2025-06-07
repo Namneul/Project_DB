@@ -1,9 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled/detailPage.dart';
+import 'package:untitled/parseRecipeSteps.dart';
 
-// TextEditingController는 Stateful 위젯 안으로 옮기는 것이 관리하기 좋습니다.
-// final TextEditingController searchController = TextEditingController(); // 여기서는 제거
 
 class SearchPage extends StatefulWidget { // StatefulWidget으로 변경
   const SearchPage({Key? key}) : super(key: key);
@@ -13,13 +12,15 @@ class SearchPage extends StatefulWidget { // StatefulWidget으로 변경
 }
 
 class _SearchPageState extends State<SearchPage> { // State 클래스 생성
-  final TextEditingController _searchController = TextEditingController(); // State 안으로 이동
+  late final TextEditingController _searchController; // State 안으로 이동
   List<dynamic>? searchResults; // 검색 결과를 저장할 변수
   bool isLoading = false; // 로딩 상태
   String? error; // 에러 메시지
 
   @override
   Widget build(BuildContext context) {
+    _searchController = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepOrange,
@@ -78,11 +79,9 @@ class _SearchPageState extends State<SearchPage> { // State 클래스 생성
               String mainIngredients = (item['주재료 이름'] is List)
                   ? (item['주재료 이름'] as List).join(', ')
                   : item['주재료 이름']?.toString() ?? '주재료 없음';
-              List<String> recipe = (item['레시피'] is List)
-                  ? List<String>.from(item['레시피'])
-                  : item['레시피'] is String
-                  ? [item['레시피']]
-                  : [];
+              String rawRecipe = item['레시피'];
+              rawRecipe = rawRecipe.replaceAll(RegExp(r'^\[|\]$'), '');
+              List<String> recipeSteps = parseRecipeSteps(rawRecipe);
 
               return Card(
                 margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -95,7 +94,7 @@ class _SearchPageState extends State<SearchPage> { // State 클래스 생성
                         countryCategory: countryCategory,
                         difficulty: difficulty,
                         mainIngredients: mainIngredients,
-                        recipe: recipe,
+                        recipe: recipeSteps,
                     ),
                     ),
                     );
@@ -153,7 +152,7 @@ class _SearchPageState extends State<SearchPage> { // State 클래스 생성
     });
 
     try {
-      var url = 'http://192.168.163.1:3000/searchfood'; // Node.js API 엔드포인트 URL
+      var url = 'http:// 192.168.50.15:3000/searchfood'; // Node.js API 엔드포인트 URL
       var dio = Dio();
 
       Map<String, dynamic> searchData = {

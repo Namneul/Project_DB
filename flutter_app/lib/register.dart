@@ -4,11 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 // 컨트롤러는 각 입력란마다 할당
-final TextEditingController nameController = TextEditingController();
-final TextEditingController emailController = TextEditingController();
-final TextEditingController idController = TextEditingController();
-final TextEditingController passwordController = TextEditingController();
-final TextEditingController passwordCheckController = TextEditingController();
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -21,9 +16,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _PWobscureText = true;
   bool _PWChkobscureText = true;
   final _registerFormKey = GlobalKey<FormState>();
+  late final TextEditingController nameController;
+  late final TextEditingController emailController;
+  late final TextEditingController idController;
+  late final TextEditingController passwordController;
+  late final TextEditingController passwordCheckController;
 
   @override
   Widget build(BuildContext context) {
+    nameController = TextEditingController();
+    emailController = TextEditingController();
+    idController = TextEditingController();
+    passwordController = TextEditingController();
+    passwordCheckController = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('회원가입'),
@@ -171,7 +177,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> _registerUser() async {
     try {
-      var url = 'http://192.168.163.1:3000/register';
+      var url = 'http:// 192.168.50.15:3000/register';
       var dio = Dio();
       Map<String, dynamic> userData = {
         'name': nameController.text,

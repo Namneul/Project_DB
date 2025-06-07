@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart'; // FontAwesomeIcons 사용을 위해
 import 'package:untitled/edit_profile_page.dart'; // 수정 페이지 import
 import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:untitled/main.dart';
+
 
 late final changedId;
 late final changedPW;
@@ -140,18 +143,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
             _buildProfileOption(
               icon: Icons.logout,
               title: '로그아웃',
-              textColor: Colors.red, // 로그아웃은 빨간색으로 강조
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('로그아웃 처리 (구현 예정)')),
-                );
-                // 로그아웃 로직 (예: 로그인 페이지로 이동)
-                // Navigator.pushAndRemoveUntil(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => LoginPage()),
-                //   (Route<dynamic> route) => false,
-                // );
-              },
+              textColor: Colors.red,
+              onTap: () => _logout(context), // 여기!
             ),
           ],
         ),
@@ -204,7 +197,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
 Future<void> _modifyUser() async{
   try{
-    var url = 'http://192.168.163.1:3000/user';
+    var url = 'http:// 192.168.50.15:3000/user';
     var dio = Dio();
     Map<String, dynamic> userData = {
       'id': changedId,
@@ -214,4 +207,15 @@ Future<void> _modifyUser() async{
   } catch(e){
     print(e);
   }
+}
+
+void _logout(BuildContext context) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.remove('jwt_token');
+  // 로그인 화면으로 이동, 뒤로가기 막기 (pushAndRemoveUntil)
+  Navigator.pushAndRemoveUntil(
+    context,
+    MaterialPageRoute(builder: (context) => MyApp()),
+        (route) => false,
+  );
 }

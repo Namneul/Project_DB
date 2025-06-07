@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 
 class RecommendationPage extends StatelessWidget {
+
+  late final TextEditingController _ingredientController;
+  List<String> ingredients = [];
+
   @override
   Widget build(BuildContext context) {
+    _ingredientController = TextEditingController();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepOrange,
