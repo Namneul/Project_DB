@@ -10,6 +10,7 @@ const authMiddleware = require('../middleware/authMiddleware.js');
 router.get('/', rootController.healthCheck);
 
 router.post('/searchfood', searchFoodController.searchFood);
+router.post('/recommendFood', searchFoodController.recommendFoodByIngredients);
 router.post('/register', userController.registerUser);
 router.post('/login', userController.loginUser);
 // router.post

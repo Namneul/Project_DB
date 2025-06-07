@@ -39,3 +39,45 @@ exports.searchFood = async(req, res) => {
         }
     }
 }
+
+exports.recommendFoodByIngredients = async (req, res) => {
+    const conn = await db.init();
+    try {
+        const ingredients = req.body.ingredients; // 배열로 들어옴
+
+        if (!Array.isArray(ingredients) || ingredients.length === 0) {
+            return res.status(400).json({ success: false, error: "재료를 한 개 이상 입력해 주세요." });
+        }
+        console.log('추천 레시피 요청 ingredients:', ingredients);
+
+        // AND 조건으로 모든 재료가 포함된 음식만 찾기 (예시: "계란", "양파" 모두 포함)
+        // `주재료 이름` 컬럼이 "계란, 양파, ..."처럼 쉼표로 구분된 문자열이라고 가정
+        let where = ingredients
+            .map(ing => `\`주재료 이름\` LIKE '%${ing}%'`)
+            .join(' AND ');
+
+        const query = `
+            SELECT \`메뉴 이름\`, \`방법 분류\`, \`국가 분류\`, \`난이도 분류\`, \`주재료 이름\`, \`레시피\`
+            FROM recipes
+            WHERE ${where}
+        `;
+
+        const result = await db.query(conn, query);
+
+        res.status(200).json({
+            success: true,
+            message: "레시피 추천 성공",
+            data: result
+        });
+
+    } catch (error) {
+        console.error("추천 레시피 검색 중 에러:", error);
+        res.status(500).json({
+            success: false,
+            message: "서버 오류로 추천 레시피 검색 실패",
+            error: error.message
+        });
+    } finally {
+        if (conn) await conn.end();
+    }
+};
