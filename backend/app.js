@@ -33,6 +33,6 @@ app.use((err, req, res, next) => {
 
 //app.listen() 함수를 사용해서 서버를 실행한다.
 //클라이언트는 'host:port'로 노드 서버에 요청을 보낼 수 있다.
-app.listen(port, ()=>{
-    console.log(`서버가 http://localhost:${port} 에서 실행 중`);
-})  
+app.listen(port, '0.0.0.0', () => {
+    console.log(`서버가 http://0.0.0.0:${port} 에서 실행 중`);
+});

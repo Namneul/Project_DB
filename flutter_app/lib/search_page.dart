@@ -11,15 +11,26 @@ class SearchPage extends StatefulWidget { // StatefulWidget으로 변경
   _SearchPageState createState() => _SearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage> { // State 클래스 생성
-  late final TextEditingController _searchController; // State 안으로 이동
-  List<dynamic>? searchResults; // 검색 결과를 저장할 변수
-  bool isLoading = false; // 로딩 상태
-  String? error; // 에러 메시지
+class _SearchPageState extends State<SearchPage> {
+  late final TextEditingController _searchController;
+  List<dynamic>? searchResults;
+  bool isLoading = false;
+  String? error;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    _searchController = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
@@ -130,11 +141,6 @@ class _SearchPageState extends State<SearchPage> { // State 클래스 생성
     );
   }
 
-  @override
-  void dispose() {
-    _searchController.dispose(); // Controller는 dispose 해줘야 메모리 누수 방지
-    super.dispose();
-  }
 
   Future<void> _searchFood() async {
     // 검색어가 비어있으면 요청하지 않음
@@ -152,7 +158,7 @@ class _SearchPageState extends State<SearchPage> { // State 클래스 생성
     });
 
     try {
-      var url = 'http:// 192.168.50.15:3000/searchfood'; // Node.js API 엔드포인트 URL
+      var url = 'http://192.168.50.15:3000/searchfood'; // Node.js API 엔드포인트 URL
       var dio = Dio();
 
       Map<String, dynamic> searchData = {

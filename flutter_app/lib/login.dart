@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled/userProfile.dart';
 
-
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
@@ -32,10 +31,21 @@ class _LoginScreenState extends State<LoginPage> {
   late final TextEditingController passwordController;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     idController = TextEditingController();
     passwordController = TextEditingController();
+  }
 
+  @override
+  void dispose() {
+    idController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final orange = Colors.deepOrange[400];
 
     return Scaffold(
@@ -61,13 +71,6 @@ class _LoginScreenState extends State<LoginPage> {
                 // 🎨 상단 일러스트 & WELCOME BACK!
                 Column(
                   children: [
-                    // --- 1. 이미지 (직접 파일 쓸 때) ---
-                    // 아래처럼 네가 올린 PNG 쓸 수도 있고,
-                    // Image.asset('assets/your_image.png', width: 120, height: 120),
-                    // 또는 네트워크 이미지 예시:
-                    // Image.network('https://...', width: 120, height: 120),
-
-                    // 여기선 Material 기본 아이콘/원형 사용 예시:
                     CircleAvatar(
                       radius: 52,
                       backgroundColor: Colors.grey[200],
@@ -86,8 +89,6 @@ class _LoginScreenState extends State<LoginPage> {
                     const SizedBox(height: 30),
                   ],
                 ),
-
-                // ----- 이하 로그인 입력 폼 -----
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text("아이디", style: TextStyle(fontSize: 16, color: orange, fontWeight: FontWeight.bold)),
@@ -216,12 +217,5 @@ class _LoginScreenState extends State<LoginPage> {
         SnackBar(content: Text('로그인 중 에러: $e')),
       );
     }
-  }
-
-  @override
-  void dispose() {
-    idController.dispose();
-    passwordController.dispose();
-    super.dispose();
   }
 }

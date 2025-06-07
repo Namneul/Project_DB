@@ -16,6 +16,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _PWobscureText = true;
   bool _PWChkobscureText = true;
   final _registerFormKey = GlobalKey<FormState>();
+
   late final TextEditingController nameController;
   late final TextEditingController emailController;
   late final TextEditingController idController;
@@ -23,12 +24,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
   late final TextEditingController passwordCheckController;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     nameController = TextEditingController();
     emailController = TextEditingController();
     idController = TextEditingController();
     passwordController = TextEditingController();
     passwordCheckController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    idController.dispose();
+    passwordController.dispose();
+    passwordCheckController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
 
     return Scaffold(
       appBar: AppBar(
@@ -198,15 +214,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  @override
-  void dispose() {
-    nameController.dispose();
-    emailController.dispose();
-    idController.dispose();
-    passwordController.dispose();
-    passwordCheckController.dispose();
-    super.dispose();
-  }
 }
 
 void StateToast(String msg) {
