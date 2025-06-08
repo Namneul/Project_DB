@@ -66,12 +66,13 @@ class _DetailPageState extends State<DetailPage> {
           'recipeName': recipeName,
         });
       } else {
-        // 좋아요 취소
-        await dio.delete(url, data: {
+        // 좋아요 취소 (queryParameters!)
+        await dio.delete(url, queryParameters: {
           'userId': userId,
           'recipeName': recipeName,
         });
       }
+
     } catch (e) {
       setState(() {
         isLiked = !isLiked;

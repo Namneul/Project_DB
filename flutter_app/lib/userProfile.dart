@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart'; // FontAwesomeI
 import 'package:untitled/edit_profile_page.dart'; // 수정 페이지 import
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:untitled/liked_list_page.dart';
 import 'package:untitled/main.dart';
 
 
@@ -122,21 +123,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
               icon: FontAwesomeIcons.heart, // FontAwesomeIcons 사용
               title: '좋아요 누른 게시글',
               onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('좋아요 누른 게시글 페이지로 이동 (구현 예정)')),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LikedRecipesPage()),
                 );
                 // Navigator.push(context, MaterialPageRoute(builder: (context) => LikedPostsPage()));
-              },
-            ),
-            _buildDivider(),
-            _buildProfileOption(
-              icon: Icons.settings,
-              title: '설정',
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('설정 페이지로 이동 (구현 예정)')),
-                );
-                // Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
               },
             ),
             _buildDivider(),
@@ -197,7 +188,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
 Future<void> _modifyUser() async{
   try{
-    var url = 'http:// 192.168.50.15:3000/user';
+    var url = 'http://172.30.1.7:3000/user';
     var dio = Dio();
     Map<String, dynamic> userData = {
       'id': changedId,

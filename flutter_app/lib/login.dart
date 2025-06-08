@@ -184,7 +184,7 @@ class _LoginScreenState extends State<LoginPage> {
 
   Future<void> _loginUser() async {
     try {
-      var url = 'http://192.168.50.15:3000/login';
+      var url = 'http://172.30.1.7:3000/login';
       var dio = Dio();
 
       Map<String, dynamic> userData = {
@@ -199,8 +199,10 @@ class _LoginScreenState extends State<LoginPage> {
 
       if (response.statusCode == 200 && response.data['success'] == true) {
         final token = response.data['token'];
+        final userId = response.data['user']['id'];
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('jwt_token', token);
+        await prefs.setString('userId', userId);
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('로그인 성공!')),

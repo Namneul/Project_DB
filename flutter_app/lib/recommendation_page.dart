@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'package:untitled/detailPage.dart';
+import 'package:untitled/detail_page.dart';
 import 'package:untitled/parseRecipeSteps.dart';
 
 class RecommendationPage extends StatefulWidget {
@@ -55,7 +55,7 @@ class _RecommendationPageState extends State<RecommendationPage> {
     });
 
     try {
-      var url = 'http://192.168.50.15:3000/recommendFood'; // 서버 라우트는 네가 맞게!
+      var url = 'http://172.30.1.7:3000/recommendFood'; // 서버 라우트는 네가 맞게!
       var dio = Dio();
 
       Map<String, dynamic> searchData = {
