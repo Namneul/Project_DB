@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class DetailPage extends StatelessWidget {
+class DetailPage extends StatefulWidget {
   final String menuName;
   final String methodCategory;
   final String countryCategory;
   final String difficulty;
   final String mainIngredients;
-
-  final List<String> recipe; // 레시피만!
-
+  final List<String> recipe;
 
   const DetailPage({
     Key? key,
@@ -21,15 +21,86 @@ class DetailPage extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<DetailPage> createState() => _DetailPageState();
+}
+
+class _DetailPageState extends State<DetailPage> {
+  bool isLiked = false;
+  String? userId; // <-- 실제 로그인한 유저 id
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserId();
+  }
+
+  Future<void> _loadUserId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userId = prefs.getString('userId');
+    });
+  }
+
+  String get recipeName => widget.menuName;
+
+  Future<void> _toggleLike() async {
+    if (userId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('로그인이 필요합니다!')),
+      );
+      return;
+    }
+
+    setState(() {
+      isLiked = !isLiked;
+    });
+
+    try {
+      final dio = Dio();
+      final url = 'http://172.30.1.7:3000/like';
+
+      if (isLiked) {
+        // 좋아요 등록
+        await dio.post(url, data: {
+          'userId': userId,
+          'recipeName': recipeName,
+        });
+      } else {
+        // 좋아요 취소
+        await dio.delete(url, data: {
+          'userId': userId,
+          'recipeName': recipeName,
+        });
+      }
+    } catch (e) {
+      setState(() {
+        isLiked = !isLiked;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("좋아요 처리 실패: $e")),
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // 색상 테마
     final orange = Colors.deepOrange[400];
     final grayBg = Colors.grey[100];
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(menuName),
+        title: Text(widget.menuName),
         backgroundColor: orange,
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.white,
+        child: Icon(
+          isLiked ? Icons.favorite : Icons.favorite_border,
+          color: isLiked ? Colors.red : Colors.grey,
+          size: 32,
+        ),
+        onPressed: _toggleLike,
+        tooltip: isLiked ? "좋아요 취소" : "좋아요",
       ),
       body: Container(
         color: grayBg,
@@ -39,7 +110,8 @@ class DetailPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 이미지
+                // ...생략 (나머지 UI는 이전과 동일)...
+                // 정보/레시피 등은 그대로!
                 Center(
                   child: Container(
                     width: 120,
@@ -59,8 +131,6 @@ class DetailPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-
-                // 기본 정보 카드 스타일
                 Card(
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                   color: Colors.white,
@@ -70,16 +140,14 @@ class DetailPage extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _InfoRow(label: "분류", value: "$methodCategory ($countryCategory)"),
-                        _InfoRow(label: "난이도", value: difficulty),
-                        _InfoRow(label: "주재료", value: mainIngredients),
+                        _InfoRow(label: "분류", value: "${widget.methodCategory} (${widget.countryCategory})"),
+                        _InfoRow(label: "난이도", value: widget.difficulty),
+                        _InfoRow(label: "주재료", value: widget.mainIngredients),
                       ],
                     ),
                   ),
                 ),
                 const SizedBox(height: 26),
-
-                // 레시피
                 Text(
                   '레시피',
                   style: TextStyle(
@@ -89,28 +157,22 @@ class DetailPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 14),
-                recipe.isEmpty
+                widget.recipe.isEmpty
                     ? const Padding(
                   padding: EdgeInsets.only(left: 8),
                   child: Text("레시피 정보가 없습니다.", style: TextStyle(fontSize: 16, color: Colors.grey)),
                 )
                     : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: recipe.asMap().entries.map((entry) {
+                  children: widget.recipe.asMap().entries.map((entry) {
                     int idx = entry.key;
                     String step = entry.value;
-
-                    // 숫자. 뒷부분만 추출해서 앞의 '1. '을 빼고 예쁘게 만들 수도 있음
-                    // 예: '1. 내용' -> '내용'
-                    // 아래처럼 정제해도 OK:
                     final stepText = step.replaceFirst(RegExp(r'^\d+\.\s*'), '');
-
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 16.0),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // 숫자 부분
                           Text(
                             "${idx + 1}.",
                             style: TextStyle(
@@ -121,7 +183,6 @@ class DetailPage extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 12),
-                          // 내용 부분
                           Expanded(
                             child: Text(
                               stepText,
