@@ -55,7 +55,7 @@ class _RecommendationPageState extends State<RecommendationPage> {
     });
 
     try {
-      var url = 'http://172.30.1.7:3000/recommendFood'; // 서버 라우트는 네가 맞게!
+      var url = 'http://192.168.50.15:3000/recommendFood'; // 서버 라우트는 네가 맞게!
       var dio = Dio();
 
       Map<String, dynamic> searchData = {

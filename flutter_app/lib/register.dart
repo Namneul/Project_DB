@@ -193,7 +193,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> _registerUser() async {
     try {
-      var url = 'http://172.30.1.7:3000/register';
+      var url = 'http://192.168.50.15:3000/register';
       var dio = Dio();
       Map<String, dynamic> userData = {
         'name': nameController.text,

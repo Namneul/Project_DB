@@ -41,7 +41,7 @@ class _LikedRecipesPageState extends State<LikedRecipesPage> {
       }
 
       final dio = Dio();
-      final url = 'http://172.30.1.7:3000/liked-recipes'; // 서버 엔드포인트에 맞게!
+      final url = 'http://192.168.50.15:3000/liked-recipes'; // 서버 엔드포인트에 맞게!
       final response = await dio.post(url, data: {'userId': userId});
 
       if (response.statusCode == 200 && response.data['success'] == true) {

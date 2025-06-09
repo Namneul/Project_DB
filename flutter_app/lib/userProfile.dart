@@ -188,7 +188,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
 Future<void> _modifyUser() async{
   try{
-    var url = 'http://172.30.1.7:3000/user';
+    var url = 'http://192.168.50.15:3000/user';
     var dio = Dio();
     Map<String, dynamic> userData = {
       'id': changedId,

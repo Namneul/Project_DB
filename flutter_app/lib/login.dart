@@ -184,7 +184,7 @@ class _LoginScreenState extends State<LoginPage> {
 
   Future<void> _loginUser() async {
     try {
-      var url = 'http://172.30.1.7:3000/login';
+      var url = 'http://192.168.50.15:3000/login';
       var dio = Dio();
 
       Map<String, dynamic> userData = {

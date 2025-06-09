@@ -57,7 +57,7 @@ class _DetailPageState extends State<DetailPage> {
 
     try {
       final dio = Dio();
-      final url = 'http://172.30.1.7:3000/like';
+      final url = 'http://192.168.50.15:3000/like';
 
       if (isLiked) {
         // 좋아요 등록

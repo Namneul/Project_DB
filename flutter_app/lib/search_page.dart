@@ -158,7 +158,7 @@ class _SearchPageState extends State<SearchPage> {
     });
 
     try {
-      var url = 'http://172.30.1.7:3000/searchfood'; // Node.js API 엔드포인트 URL
+      var url = 'http://192.168.50.15:3000/searchfood'; // Node.js API 엔드포인트 URL
       var dio = Dio();
 
       Map<String, dynamic> searchData = {
