@@ -86,6 +86,7 @@ exports.recommendFoodByIngredients = async (req, res) => {
 exports.cosinRecommend = async (req, res) => {
     const RECOMMEND_API_URL = 'http://localhost:8000/recommend';
     const conn = await db.init();
+    const axios = require('axios');
 
     try {
         const { userId } = req.body;
@@ -95,27 +96,55 @@ exports.cosinRecommend = async (req, res) => {
         const result = await db.query(conn,
             'SELECT recipe_name FROM recipe_likes WHERE user_id = ?', [userId]);
         const userLikes = result.map(row => row.recipe_name);
-        console.log('userLikes:', userLikes);   // ★여기!
 
         if (!userLikes || userLikes.length === 0) {
             return res.json({ success: true, message: "좋아요 누른 레시피 없음", recommendations: [] });
         }
 
         // 2. FastAPI 추천 호출
-        const axios = require('axios');
         const apiRes = await axios.get(RECOMMEND_API_URL, {
             params: { menus: userLikes.join(',') }
         });
-        console.log('추천 API 응답:', apiRes.data); // ★여기!
+
+        // 3. 추천 메뉴이름 리스트
+        const recommendedMenuNames = apiRes.data.recommendations.map(item => item['메뉴이름']);
+
+        // 4. DB에서 상세정보 모두 조회 (필요한 컬럼만 추출)
+        let detailSql = `
+            SELECT \`메뉴 이름\`, \`방법 분류\`, \`국가 분류\`, \`테마 분류\`, \`난이도 분류\`,
+                   \`주재료 이름\`, \`레시피\`
+            FROM recipes
+            WHERE \`메뉴 이름\` IN (${recommendedMenuNames.map(() => '?').join(',')})
+        `;
+        const [details] = await conn.query(detailSql, recommendedMenuNames);
+
+        // 5. Map으로 변환
+        const detailMap = {};
+        details.forEach(r => { detailMap[r['메뉴 이름']] = r; });
+
+        // 6. 추천 결과와 상세정보 병합
+        const mergedResults = apiRes.data.recommendations.map(item => {
+            const d = detailMap[item['메뉴이름']] || {};
+            return {
+                menuName: item['메뉴이름'],
+                methodCategory: d['방법 분류'] ?? '',
+                countryCategory: d['국가 분류'] ?? '',
+                themeCategory: d['테마 분류'] ?? '',
+                difficulty: d['난이도 분류'] ?? '',
+                mainIngredients: d['주재료 이름'] ?? '',
+                recipe: d['레시피'] ?? '',
+                similarity: item['유사도'],
+            };
+        });
 
         return res.json({
             success: true,
             message: "추천 레시피 TOP 10",
-            recommendations: apiRes.data.recommendations
+            recommendations: mergedResults
         });
 
     } catch (error) {
-        console.error('cosinRecommend 에러:', error); // ★여기!
+        console.error('cosinRecommend 에러:', error);
         return res.status(500).json({ success: false, error: error.message });
     } finally {
         if (conn) await conn.end();

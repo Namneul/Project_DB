@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-
+import 'package:untitled/detail_page.dart';
+import 'parseRecipeSteps.dart';
 
 class RecommendResultPage extends StatefulWidget {
   final String userId;
@@ -49,7 +50,6 @@ class _RecommendResultPageState extends State<RecommendResultPage> {
         isLoading = false;
       });
     }
-
   }
 
   @override
@@ -70,14 +70,65 @@ class _RecommendResultPageState extends State<RecommendResultPage> {
         itemCount: recommendations!.length,
         itemBuilder: (context, idx) {
           final item = recommendations![idx];
+
+          // 안전하게 여러 경우 대비!
+          String menuName = item['menuName'] ??
+              item['메뉴이름'] ??
+              item['메뉴 이름'] ??
+              '이름 없음';
+          String methodCategory = item['methodCategory'] ??
+              item['방법분류'] ??
+              item['방법 분류'] ??
+              '';
+          String countryCategory = item['countryCategory'] ??
+              item['국가분류'] ??
+              item['국가 분류'] ??
+              '';
+          String difficulty = item['difficulty'] ??
+              item['난이도분류'] ??
+              item['난이도 분류'] ??
+              '';
+          String mainIngredients = item['mainIngredients'] ??
+              item['주재료이름'] ??
+              item['주재료 이름'] ??
+              '';
+          // 레시피는 문자열이든 리스트든 string으로 변환 후 파싱
+          String rawRecipe = (item['recipe'] ??
+              item['레시피'] ??
+              '')
+              .toString();
+          rawRecipe =
+              rawRecipe.replaceAll(RegExp(r'^\[|\]$'), '');
+          List<String> recipeSteps = parseRecipeSteps(rawRecipe);
+
+          // 유사도 값도 여러 경우 대비
+          String similarity = (item['similarity'] ??
+              item['유사도'] ??
+              '').toString();
+
           return Card(
             margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
             child: ListTile(
               leading: Icon(Icons.star, color: orange, size: 32),
-              title: Text(item['메뉴이름'] ?? '이름 없음',
+              title: Text(menuName,
                   style: const TextStyle(fontWeight: FontWeight.bold)),
-              subtitle: Text('유사도: ${item['유사도']}'),
-              // 필요하면 분류, 재료 등 추가!
+              subtitle: Text('유사도: $similarity'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => DetailPage(
+                      menuName: menuName,
+                      methodCategory: methodCategory,
+                      countryCategory: countryCategory,
+                      difficulty: difficulty,
+                      mainIngredients: mainIngredients,
+                      recipe: recipeSteps,
+                      // 필요하다면 더 많은 데이터 전달
+                    ),
+                  ),
+                );
+              },
             ),
           );
         },
