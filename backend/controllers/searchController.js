@@ -81,3 +81,43 @@ exports.recommendFoodByIngredients = async (req, res) => {
         if (conn) await conn.end();
     }
 };
+
+
+exports.cosinRecommend = async (req, res) => {
+    const RECOMMEND_API_URL = 'http://localhost:8000/recommend';
+    const conn = await db.init();
+
+    try {
+        const { userId } = req.body;
+        if (!userId) return res.status(400).json({ success: false, message: "userId 필요" });
+
+        // 1. 좋아요 메뉴 조회
+        const result = await db.query(conn,
+            'SELECT recipe_name FROM recipe_likes WHERE user_id = ?', [userId]);
+        const userLikes = result.map(row => row.recipe_name);
+        console.log('userLikes:', userLikes);   // ★여기!
+
+        if (!userLikes || userLikes.length === 0) {
+            return res.json({ success: true, message: "좋아요 누른 레시피 없음", recommendations: [] });
+        }
+
+        // 2. FastAPI 추천 호출
+        const axios = require('axios');
+        const apiRes = await axios.get(RECOMMEND_API_URL, {
+            params: { menus: userLikes.join(',') }
+        });
+        console.log('추천 API 응답:', apiRes.data); // ★여기!
+
+        return res.json({
+            success: true,
+            message: "추천 레시피 TOP 10",
+            recommendations: apiRes.data.recommendations
+        });
+
+    } catch (error) {
+        console.error('cosinRecommend 에러:', error); // ★여기!
+        return res.status(500).json({ success: false, error: error.message });
+    } finally {
+        if (conn) await conn.end();
+    }
+};

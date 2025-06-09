@@ -39,7 +39,7 @@ class RecipeHome extends StatelessWidget {
             Icon(Icons.restaurant_menu, size: 80, color: Colors.deepOrange),
             const SizedBox(height: 10),
             const Text(
-              '자취생을 위한 레시피 추천 앱',
+              '자취의 신',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 30),

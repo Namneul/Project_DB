@@ -16,6 +16,7 @@ router.post('/register', userController.registerUser);
 router.post('/login', userController.loginUser);
 router.post('/like', likeController.recipeLike);
 router.post('/liked-recipes', likeController.likedRecipe);
+router.post('/get-recommend', searchFoodController.cosinRecommend);
 
 router.delete('/like', likeController.recipeLikeDelete);
 

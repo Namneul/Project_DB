@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled/detail_page.dart';
 import 'package:untitled/parseRecipeSteps.dart';
+import 'package:untitled/recommend_result_page.dart';
 
 
 class LikedRecipesPage extends StatefulWidget {
@@ -136,6 +137,29 @@ class _LikedRecipesPageState extends State<LikedRecipesPage> {
           );
         },
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        icon: Icon(Icons.recommend),
+        label: Text('추천받기'),
+        backgroundColor: Colors.deepOrange[400],
+        onPressed: () async {
+          final prefs = await SharedPreferences.getInstance();
+          final userId = prefs.getString('userId');
+          if (userId == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('로그인이 필요합니다.')),
+            );
+            return;
+          }
+          // 새 페이지로 이동하면서 userId 전달!
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => RecommendResultPage(userId: userId),
+            ),
+          );
+        },
+      ),
+
     );
   }
 
